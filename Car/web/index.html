@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Robot Remote</title>
+
+<style>
+
+body{
+    background:#202124;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+}
+
+h1{
+    margin-top:40px;
+}
+
+button{
+
+    width:150px;
+    height:80px;
+
+    font-size:24px;
+
+    margin:15px;
+
+    border-radius:15px;
+
+    border:none;
+
+    cursor:pointer;
+}
+
+.status{
+
+    font-size:22px;
+    margin:20px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Robot Remote Controller</h1>
+
+<div class="status">
+
+Current Command :
+<span id="cmd">STOP</span>
+
+</div>
+
+<button id="forward">⬆ Forward</button>
+
+<br>
+
+<button id="left">⬅ Left</button>
+
+<button id="stop">⏹ Stop</button>
+
+<button id="right">➡ Right</button>
+
+<br>
+
+<button id="backward">⬇ Backward</button>
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
