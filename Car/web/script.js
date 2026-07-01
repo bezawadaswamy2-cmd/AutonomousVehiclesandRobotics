@@ -1,40 +1,71 @@
-const server = "http://127.0.0.1:8000";
+const socket = new WebSocket("ws://127.0.0.1:8000/ws");
 
-async function send(command) {
+socket.onopen = () => {
+    console.log("Connected");
+};
 
-    document.getElementById("cmd").innerHTML = command.toUpperCase();
+socket.onclose = () => {
+    console.log("Disconnected");
+};
 
-    await fetch(server + "/" + command, {
-        method: "POST"
-    });
+function send(data) {
 
+    document.getElementById("cmd").innerHTML =
+        `${data.motion} ${data.steering}`;
+
+    socket.send(JSON.stringify(data));
 }
 
-// Forward
-document.getElementById("forward").onclick = () => send("forward");
+// Motion buttons
 
-// Backward
-document.getElementById("backward").onclick = () => send("backward");
+document.getElementById("forward").onclick =
+() => send({
+    motion:"forward"
+});
 
-// Stop
-document.getElementById("stop").onclick = () => send("stop");
+document.getElementById("backward").onclick =
+() => send({
+    motion:"backward"
+});
 
-// LEFT (Hold)
+document.getElementById("stop").onclick =
+() => send({
+    motion:"stop",
+    steering:"straight"
+});
+
+// Steering buttons
 
 const left = document.getElementById("left");
 
-left.onmousedown = () => send("left");
+left.onmousedown =
+() => send({
+    steering:"left"
+});
 
-left.onmouseup = () => send("straight");
+left.onmouseup =
+() => send({
+    steering:"straight"
+});
 
-left.onmouseleave = () => send("straight");
-
-// RIGHT (Hold)
+left.onmouseleave =
+() => send({
+    steering:"straight"
+});
 
 const right = document.getElementById("right");
 
-right.onmousedown = () => send("right");
+right.onmousedown =
+() => send({
+    steering:"right"
+});
 
-right.onmouseup = () => send("straight");
+right.onmouseup =
+() => send({
+    steering:"straight"
+});
 
-right.onmouseleave = () => send("straight");
+right.onmouseleave =
+() => send({
+    steering:"straight"
+});
