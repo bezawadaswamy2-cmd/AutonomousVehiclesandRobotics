@@ -1,71 +1,108 @@
-const socket = new WebSocket("ws://127.0.0.1:8000/ws");
+// WebSocket Connection
+
+const SERVER_IP = window.location.hostname;
+const socket = new WebSocket(`ws://${SERVER_IP}:8000/ws`);
+
+// Store the current robot state
+let robotState = {
+    motion: "stop",
+    steering: "straight"
+};
 
 socket.onopen = () => {
-    console.log("Connected");
+    console.log("✅ WebSocket Connected");
 };
 
 socket.onclose = () => {
-    console.log("Disconnected");
+    console.log("❌ WebSocket Disconnected");
 };
 
-function send(data) {
+socket.onerror = (error) => {
+    console.error("WebSocket Error:", error);
+};
+
+// Send Current State
+
+function sendState() {
+
+    if (socket.readyState !== WebSocket.OPEN) {
+        console.log("Socket not connected yet");
+        return;
+    }
 
     document.getElementById("cmd").innerHTML =
-        `${data.motion} ${data.steering}`;
+        `${robotState.motion.toUpperCase()} | ${robotState.steering.toUpperCase()}`;
 
-    socket.send(JSON.stringify(data));
+    socket.send(JSON.stringify(robotState));
 }
 
-// Motion buttons
+// Motion Buttons
 
-document.getElementById("forward").onclick =
-() => send({
-    motion:"forward"
-});
+document.getElementById("forward").onclick = () => {
+    robotState.motion = "forward";
+    sendState();
+};
 
-document.getElementById("backward").onclick =
-() => send({
-    motion:"backward"
-});
+document.getElementById("backward").onclick = () => {
+    robotState.motion = "backward";
+    sendState();
+};
 
-document.getElementById("stop").onclick =
-() => send({
-    motion:"stop",
-    steering:"straight"
-});
+document.getElementById("stop").onclick = () => {
+    robotState.motion = "stop";
+    robotState.steering = "straight";
+    sendState();
+};
 
-// Steering buttons
+// LEFT BUTTON
 
 const left = document.getElementById("left");
 
-left.onmousedown =
-() => send({
-    steering:"left"
-});
+left.onpointerdown = (e) => {
+    e.preventDefault();
+    robotState.steering = "left";
+    sendState();
+};
 
-left.onmouseup =
-() => send({
-    steering:"straight"
-});
+left.onpointerup = (e) => {
+    e.preventDefault();
+    robotState.steering = "straight";
+    sendState();
+};
 
-left.onmouseleave =
-() => send({
-    steering:"straight"
-});
+left.onpointerleave = () => {
+    robotState.steering = "straight";
+    sendState();
+};
+
+left.onpointercancel = () => {
+    robotState.steering = "straight";
+    sendState();
+};
+
+// RIGHT BUTTON
+
 
 const right = document.getElementById("right");
 
-right.onmousedown =
-() => send({
-    steering:"right"
-});
+right.onpointerdown = (e) => {
+    e.preventDefault();
+    robotState.steering = "right";
+    sendState();
+};
 
-right.onmouseup =
-() => send({
-    steering:"straight"
-});
+right.onpointerup = (e) => {
+    e.preventDefault();
+    robotState.steering = "straight";
+    sendState();
+};
 
-right.onmouseleave =
-() => send({
-    steering:"straight"
-});
+right.onpointerleave = () => {
+    robotState.steering = "straight";
+    sendState();
+};
+
+right.onpointercancel = () => {
+    robotState.steering = "straight";
+    sendState();
+};
