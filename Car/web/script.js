@@ -1,7 +1,11 @@
 // WebSocket Connection
 
-const SERVER_IP = window.location.hostname;
-const socket = new WebSocket(`ws://${SERVER_IP}:8000/ws`);
+const protocol =
+    window.location.protocol === "https:" ? "wss" : "ws";
+
+const socket = new WebSocket(
+    `${protocol}://${window.location.host}/ws`
+);
 
 // Store the current robot state
 let robotState = {

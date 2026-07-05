@@ -1,7 +1,11 @@
 // WebSocket Connection
 
-const SERVER_IP = window.location.hostname;
-const socket = new WebSocket(`ws://${SERVER_IP}:8000/ws`);
+const protocol =
+    window.location.protocol === "https:" ? "wss" : "ws";
+
+const socket = new WebSocket(
+    `${protocol}://${window.location.host}/ws`
+);
 
 // Store the current robot state
 let robotState = {
@@ -105,4 +109,25 @@ right.onpointerleave = () => {
 right.onpointercancel = () => {
     robotState.steering = "straight";
     sendState();
+};
+
+let startTime = 0;
+
+function sendState() {
+
+    startTime = performance.now();
+
+    socket.send(JSON.stringify(robotState));
+
+}
+
+socket.onmessage = (event) => {
+
+    const latency = performance.now() - startTime;
+
+    console.log(`Latency: ${latency.toFixed(2)} ms`);
+
+    document.getElementById("latency").innerHTML =
+        latency.toFixed(2) + " ms";
+
 };
