@@ -1,9 +1,12 @@
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.add_middleware(
     CORSMiddleware,
@@ -16,6 +19,11 @@ app.add_middleware(
 motion = "stop"
 steering = "straight"
 connected_clients = set()
+
+
+@app.get("/")
+def home():
+    return FileResponse("static/index.html")
 
 
 @app.post("/forward")
