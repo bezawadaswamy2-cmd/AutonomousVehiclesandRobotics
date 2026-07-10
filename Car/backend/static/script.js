@@ -3,9 +3,9 @@
 const protocol =
     window.location.protocol === "https:" ? "wss" : "ws";
 
-const socket = new WebSocket(
-    `${protocol}://${window.location.host}/ws`
-);
+let socket = null;
+
+let startTime = 0;
 
 // Store the current robot state
 let robotState = {
@@ -13,29 +13,78 @@ let robotState = {
     steering: "straight"
 };
 
-socket.onopen = () => {
-    console.log("✅ WebSocket Connected");
-};
+// Connect function
 
-socket.onclose = () => {
-    console.log("❌ WebSocket Disconnected");
-};
+function connect(){
+    if (socket !== null) return;
 
-socket.onerror = (error) => {
-    console.error("WebSocket Error:", error);
-};
+    socket = new WebSocket(
+        `${protocol}://${window.location.host}/ws`
+    );
+
+    socket.onopen = () => {
+        console.log("connected");
+
+        document.getElementById("robot-status").innerHTML = "connected";
+
+    };
+
+    socket.onclose = () => {
+        console.log("Disconnected");
+
+        document.getElementById("robot-status").innerHTML = "Disconnected";
+
+        socket = null;
+    };
+
+    socket.onerror = () => {
+
+        document.getElementById("robot-status").innerHTML = "Connecting error";
+
+    };
+
+    socket.onmessage = (event) => {
+
+        const data = JSON.parse(event.data);
+
+        const latency = performance.now() - startTime;
+
+        document.getElementById("latency").innerHTML = latency.toFixed(1) + " ms";
+
+        document.getElementById("motion-status").innerHTML = data.motion.toUpperCase();
+
+        document.getElementById("steering-status").innerHTML = data.steering.toUpperCase();
+
+    }
+}
+
+// Disconnect Function
+function disconnect(){
+    if (socket == null) return;
+
+    socket.close();
+
+}
 
 // Send Current State
 
 function sendState() {
 
+    if(socket == null){
+        return;
+    }
+
+    if(socket.readyState !== WebSocket.OPEN){
+        return;
+    }
+
     if (socket.readyState !== WebSocket.OPEN) {
         console.log("Socket not connected yet");
         return;
     }
-
-    document.getElementById("cmd").innerHTML =
-        `${robotState.motion.toUpperCase()} | ${robotState.steering.toUpperCase()}`;
+    startTime = performance.now();
+    document.getElementById("motion-status").innerHTML =
+        `${robotState.motion.toUpperCase()}`;
 
     socket.send(JSON.stringify(robotState));
 }
@@ -111,23 +160,27 @@ right.onpointercancel = () => {
     sendState();
 };
 
-let startTime = 0;
-
-function sendState() {
-
-    startTime = performance.now();
-
-    socket.send(JSON.stringify(robotState));
-
+// connect button 
+document.getElementById("connect").onclick = () => {
+    connect();
 }
 
-socket.onmessage = (event) => {
+// Disconnect Button
+document.getElementById("disconnect").onclick = () => {
+    disconnect();
+}
 
-    const latency = performance.now() - startTime;
+// if (socket !== null) {
+//     let startTime = 0;
 
-    console.log(`Latency: ${latency.toFixed(2)} ms`);
+//     socket.onmessage = (event) => {
 
-    document.getElementById("latency").innerHTML =
-        latency.toFixed(2) + " ms";
+//         const latency = performance.now() - startTime;
 
-};
+//         console.log(`Latency: ${latency.toFixed(2)} ms`);
+
+//         document.getElementById("latency").innerHTML =
+//             latency.toFixed(2) + " ms";
+
+//     };
+// }

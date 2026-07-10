@@ -7,48 +7,7 @@
 
 <title>Robot Remote</title>
 
-<style>
-
-body{
-    background:#202124;
-    color:white;
-    font-family:Arial;
-    text-align:center;
-}
-
-h1{
-    margin-top:40px;
-}
-
-button{
-
-    width:150px;
-    height:80px;
-
-    font-size:24px;
-
-    margin:15px;
-
-    border-radius:15px;
-
-    border:none;
-
-    cursor:pointer;
-}
-
-.status{
-
-    font-size:22px;
-    margin:20px;
-
-}
-
-button {
-    touch-action: none;
-}
-
-</style>
-
+<link rel="stylesheet" href="static/style.css"
 </head>
 
 <body>
@@ -58,7 +17,29 @@ button {
 <div class="status">
 
 Current Command :
-<span id="cmd">STOP</span>
+<div class="dashboard">
+
+    <div class="card">
+        <span class="label">Robot Status: </span>
+        <span id="robot-status">Disconnected</span>
+    </div>
+
+    <div class="card">
+        <span class="label">Latency: </span>
+        <span id="latency">0 ms</span>
+    </div>
+
+    <div class="card">
+        <span class="label">Motion: </span>
+        <span id="motion-status">STOP</span>
+    </div>
+
+    <div class="card">
+        <span class="label">Steering</span>
+        <span id="steering-status">STRAIGHT</span>
+    </div>
+
+</div>
 
 </div>
 
@@ -75,6 +56,12 @@ Current Command :
 <br>
 
 <button id="backward">⬇ Backward</button>
+
+<br><br>
+
+<button id="connect">Connect</button>
+
+<button id="disconnect">Disconnect</button>
 
 <script src="static/script.js"></script>
 
