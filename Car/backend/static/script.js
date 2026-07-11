@@ -89,6 +89,21 @@ function sendState() {
     socket.send(JSON.stringify(robotState));
 }
 
+//disable the buttons function
+
+function setcontrols(enable){
+    document.getElementById("forward").disabled = !enable;
+    document.getElementById("backward").disabled = !enable;
+    document.getElementById("left").disabled = !enable;
+    document.getElementById("right").disabled = !enable;
+    document.getElementById("stop").disabled = !enable;
+    if (enable){
+    console.log("all button functions are enabled.");
+    }else{
+        console.log("all button functions are disabled.");
+    }
+}
+
 // Motion Buttons
 
 document.getElementById("forward").onclick = () => {
@@ -163,24 +178,11 @@ right.onpointercancel = () => {
 // connect button 
 document.getElementById("connect").onclick = () => {
     connect();
+    setcontrols(true);
 }
 
 // Disconnect Button
 document.getElementById("disconnect").onclick = () => {
     disconnect();
+    setcontrols(false);
 }
-
-// if (socket !== null) {
-//     let startTime = 0;
-
-//     socket.onmessage = (event) => {
-
-//         const latency = performance.now() - startTime;
-
-//         console.log(`Latency: ${latency.toFixed(2)} ms`);
-
-//         document.getElementById("latency").innerHTML =
-//             latency.toFixed(2) + " ms";
-
-//     };
-// }

@@ -63,6 +63,10 @@ button{
 
     transition:0.2s;
 
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+
 }
 
 button:hover{
